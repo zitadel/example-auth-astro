@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 
+// noinspection JSUnusedGlobalSymbols
 /**
  * Handles the callback from an external Identity Provider (IdP) after a user
  * signs out. This endpoint is responsible for validating the logout request to
@@ -9,7 +10,8 @@ import type { APIRoute } from 'astro';
  * redirects to a success page. Otherwise, it redirects to an error page.
  *
  * @param request - The incoming Astro request object, which contains the
- * URL and its search parameters, including the `state` from the IdP.
+ * headers and cookies for validation.
+ * @param url - The URL object containing search parameters, including the `state` from the IdP.
  * @returns A Response object that either redirects the user to a success
  * or error page. Upon success, it includes headers to delete session cookies.
  */
