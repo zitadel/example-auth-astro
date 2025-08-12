@@ -1,9 +1,9 @@
-import { SolidAuth, type SolidAuthConfig } from '@auth/solid-start';
 import Zitadel from '@auth/core/providers/zitadel';
 import { randomUUID } from 'crypto';
 import * as oidc from 'openid-client';
 import type { JWT } from '@auth/core/jwt';
 import { ZITADEL_SCOPES } from './scopes';
+import type { FullAuthConfig } from 'auth-astro/src/config.ts';
 
 /**
  * Automatically refreshes an expired access token using the refresh token.
@@ -189,7 +189,7 @@ declare module '@auth/core/jwt' {
  * - **jwt**: Manages token storage and refresh logic
  * - **session**: Shapes what data is available to your app
  */
-export const authOptions: SolidAuthConfig = {
+export const authOptions: FullAuthConfig = {
   providers: [
     Zitadel({
       issuer: process.env.ZITADEL_DOMAIN!,
@@ -386,6 +386,3 @@ export const authOptions: SolidAuthConfig = {
     },
   },
 };
-
-// noinspection JSUnusedGlobalSymbols
-export const { GET, POST } = SolidAuth(authOptions);

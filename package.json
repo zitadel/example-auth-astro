@@ -6,9 +6,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write .",
+    "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
-    "astro": "^5.12.9"
+    "astro": "^5.12.9",
+    "auth-astro": "^4.2.0",
+    "openid-client": "^6.6.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.14"
   }
 }
