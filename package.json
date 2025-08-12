@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/node": "^9.4.0",
     "@astrojs/tailwind": "^6.0.2",
+    "@auth/core": "^0.40.0",
     "astro": "^5.12.9",
     "auth-astro": "^4.2.0",
     "openid-client": "^6.6.3"
