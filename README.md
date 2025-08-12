@@ -1,18 +1,18 @@
-# SolidStart with ZITADEL
+# Astro with ZITADEL
 
-[SolidStart](https://start.solidjs.com/) is a full-stack web framework built on top of SolidJS that enables you to create performant web applications with a modern development experience. SolidStart provides both client-side and server-side capabilities through its meta-framework approach, offering file-based routing, server functions, and seamless hydration.
+[Astro](https://astro.build/) is a modern static site generator that enables you to create performant web applications with a component-based architecture. Astro provides both static and server-side rendering capabilities through its flexible framework approach, offering file-based routing, server endpoints, and seamless client-side hydration.
 
-To secure such an application, you need a reliable way to handle user logins. For the SolidStart ecosystem, [Auth.js for SolidStart](https://authjs.dev/getting-started/installation?framework=SolidStart) is the recommended library for authentication. Think of it as a flexible security guard for your app. This guide demonstrates how to use Auth.js with a SolidStart application to implement a secure login with ZITADEL.
+To secure such an application, you need a reliable way to handle user logins. For the Astro ecosystem, [Auth.js for Astro](https://authjs.dev/getting-started/installation?framework=astro) is the recommended library for authentication. Think of it as a flexible security guard for your app. This guide demonstrates how to use Auth.js with an Astro application to implement a secure login with ZITADEL.
 
 We'll be using the **OpenID Connect (OIDC)** protocol with the **Authorization Code Flow + PKCE**. This is the industry-best practice for security, ensuring that the login process is safe from start to finish. You can learn more in our [guide to OAuth 2.0 recommended flows](https://zitadel.com/docs/guides/integrate/login/oidc/oauth-recommended-flows).
 
-This example uses **Auth.js for SolidStart**, the standard for SolidStart authentication. While ZITADEL doesn't offer a specific SDK, Auth.js is highly modular. It works with a "provider" that handles the communication with ZITADEL. Under the hood, this example uses the powerful OIDC standard to manage the secure PKCE flow.
+This example uses **Auth.js for Astro**, the standard for Astro authentication. While ZITADEL doesn't offer a specific SDK, Auth.js is highly modular. It works with a "provider" that handles the communication with ZITADEL. Under the hood, this example uses the powerful OIDC standard to manage the secure PKCE flow.
 
 Check out our Example Application to see it in action.
 
 ## Example Application
 
-The example repository includes a complete SolidStart application, ready to run, that demonstrates how to integrate ZITADEL for user authentication.
+The example repository includes a complete Astro application, ready to run, that demonstrates how to integrate ZITADEL for user authentication.
 
 This example application showcases a typical web app authentication pattern: users start on a public landing page, click a login button to authenticate with ZITADEL, and are then redirected to a protected profile page displaying their user information. The app also includes secure logout functionality that clears the session and redirects users back to ZITADEL's logout endpoint. All protected routes are automatically secured using Auth.js middleware and session management, ensuring only authenticated users can access sensitive areas of your application.
 
@@ -31,19 +31,19 @@ You'll need a ZITADEL account and application configured. Follow the [ZITADEL do
 
 > **Important:** Configure the following URLs in your ZITADEL application settings:
 >
-> - **Redirect URIs:** Add `http://localhost:3000/auth/callback` (for development)
-> - **Post Logout Redirect URIs:** Add `http://localhost:3000/api/auth/logout/callback` (for development)
+> - **Redirect URIs:** Add `http://localhost:4321/auth/callback` (for development)
+> - **Post Logout Redirect URIs:** Add `http://localhost:4321/api/auth/logout/callback` (for development)
 >
-> These URLs must exactly match what your SolidStart application uses. For production, add your production URLs.
+> These URLs must exactly match what your Astro application uses. For production, add your production URLs.
 
 ### Configuration
 
-To run the application, you first need to copy the `.env.example` file to a new file named `.env.local` and fill in your ZITADEL application credentials.
+To run the application, you first need to copy the `.env.example` file to a new file named `.env` and fill in your ZITADEL application credentials.
 
 ```dotenv
-# Port number where your SolidStart server will listen for incoming HTTP requests.
-# Change this if port 3000 is already in use on your system.
-PORT=3000
+# Port number where your Astro server will listen for incoming HTTP requests.
+# Change this if port 4321 is already in use on your system.
+PORT=4321
 
 # Session timeout in seconds. Users will be automatically logged out after this
 # duration of inactivity. 3600 seconds = 1 hour.
@@ -74,15 +74,16 @@ ZITADEL_CLIENT_SECRET="your-randomly-generated-client-secret"
 
 # OAuth callback URL where ZITADEL redirects after user authentication. This
 # MUST exactly match a Redirect URI configured in your ZITADEL application.
-ZITADEL_CALLBACK_URL="http://localhost:3000/auth/callback"
+ZITADEL_CALLBACK_URL="http://localhost:4321/auth/callback"
 
 # URL where users are redirected after logout. This should match a Post Logout
 # Redirect URI configured in your ZITADEL application settings.
-ZITADEL_POST_LOGOUT_URL="http://localhost:3000/api/auth/logout/callback"
+ZITADEL_POST_LOGOUT_URL="http://localhost:4321/api/auth/logout/callback"
 
 # Auth.js base URL for your application. In development, this is typically
-# http://localhost:3000. In production, use your actual domain.
-NEXTAUTH_URL="http://localhost:3000"
+# http://localhost:4321. In production, use your actual domain.
+AUTH_TRUST_HOST=true
+NEXTAUTH_URL="http://localhost:4321"
 ```
 
 ### Installation and Running
@@ -91,9 +92,9 @@ Follow these steps to get the application running:
 
 ```bash
 # 1. Clone the repository
-git clone git@github.com:zitadel/example-auth-solidstart.git
+git clone git@github.com:zitadel/example-auth-astro.git
 
-cd example-auth-solidstart
+cd example-auth-astro
 
 # 2. Install the project dependencies
 npm install
@@ -102,7 +103,7 @@ npm install
 npm run dev
 ```
 
-The application will now be running at `http://localhost:3000`.
+The application will now be running at `http://localhost:4321`.
 
 ## Key Features
 
@@ -124,12 +125,12 @@ Complete logout implementation that properly terminates both the local session a
 
 ## TODOs
 
-### 1. Security headers (SolidStart built-in)
+### 1. Security headers (Astro built-in)
 
-**Partially enabled.** SolidStart includes some security headers by default, but consider adding custom headers in `app.config.ts`:
+**Partially enabled.** Astro includes some security headers by default, but consider adding custom headers in `astro.config.mjs`:
 
 ```javascript
-import { defineConfig } from '@solidjs/start/config';
+import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   server: {
@@ -152,6 +153,6 @@ At minimum, configure:
 
 ## Resources
 
-- **SolidStart Documentation:** <https://start.solidjs.com/>
+- **Astro Documentation:** <https://astro.build/>
 - **Auth.js Documentation:** <https://authjs.dev/>
 - **ZITADEL Documentation:** <https://zitadel.com/docs>
