@@ -30,7 +30,10 @@ export const POST: APIRoute = async ({ request }) => {
       },
     );
   } else {
-    const { url, state } = await buildLogoutUrl(session.idToken);
+    const { url, state } = await buildLogoutUrl(
+      session.idToken,
+      (key: string) => import.meta.env[key],
+    );
 
     const response = new Response(null, {
       status: 302,

@@ -2,14 +2,10 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
 import auth from 'auth-astro';
+import { authOptions } from './src/lib/auth.js';
 
 export default defineConfig({
-  integrations: [
-    tailwind(),
-    auth({
-      configFile: './auth.config.ts',
-    }),
-  ],
+  integrations: [tailwind(), auth()],
   output: 'server',
   adapter: node({
     mode: 'standalone',
