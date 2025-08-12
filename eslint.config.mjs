@@ -6,6 +6,7 @@ import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import astroParser from 'astro-eslint-parser';
 
+// noinspection JSUnresolvedReference
 export default [
   {
     files: ['**/*.{ts,tsx}'],
