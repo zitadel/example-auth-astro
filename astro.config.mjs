@@ -10,6 +10,9 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
+  server: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
+  },
   vite: {
     server: {
       headers: {

@@ -115,11 +115,10 @@ import Footer from '../components/Footer.astro';
                   />
                 </div>
               </div>
-              <a
-                href="/api/auth/signin/zitadel"
+              <button
+                id="signin-btn"
                 class="mb-6 flex w-full cursor-pointer items-center justify-center space-x-2 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700"
               >
-                <!--suppress HtmlDeprecatedAttribute -->
                 <svg
                   class="h-5 w-5 text-white"
                   aria-hidden="true"
@@ -135,7 +134,7 @@ import Footer from '../components/Footer.astro';
                     clip-rule="evenodd"></path>
                 </svg>
                 <span>Login</span>
-              </a>
+              </button>
               <div class="text-center">
                 <p class="mb-4 text-sm text-gray-500">
                   What happens when you click the button:
@@ -197,3 +196,10 @@ import Footer from '../components/Footer.astro';
   </main>
   <Footer />
 </Layout>
+<script>
+  import { signIn } from 'auth-astro/client';
+
+  document.getElementById('signin-btn')?.addEventListener('click', () => {
+    signIn('zitadel');
+  });
+</script>

@@ -3,8 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getSession } from 'auth-astro/server';
+import authConfig from '../../auth.config';
 
-const session = await getSession(Astro.request);
+const session = await getSession(Astro.request, authConfig);
 
 if (!session) {
   return Astro.redirect(

@@ -213,6 +213,7 @@ export function createAuthOptions(
     ],
 
     basePath: '/api/auth',
+    prefix: '/api/auth',
     session: {
       strategy: 'jwt',
       maxAge: Number(getEnv('SESSION_DURATION')) || 3600,
