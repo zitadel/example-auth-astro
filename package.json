@@ -7,8 +7,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "prepack": "npx tsc --noEmit",
+    "test": "playwright test"
   },
   "dependencies": {
     "@astrojs/node": "^9.4.1",
