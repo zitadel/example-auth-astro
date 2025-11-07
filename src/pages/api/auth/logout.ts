@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
-import { getSession } from 'auth-astro/server';
+import { getSession } from '@mridang/astro-auth/server';
 import { buildLogoutUrl } from '../../../lib/auth.ts';
+import authConfig from '../../../../auth.config.ts';
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -17,7 +18,7 @@ import { buildLogoutUrl } from '../../../lib/auth.ts';
  * that will be validated in the logout callback.
  */
 export const POST: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+  const session = await getSession(request, authConfig);
 
   if (!session?.idToken) {
     return new Response(

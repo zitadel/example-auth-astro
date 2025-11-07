@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
-import auth from 'auth-astro';
-import { authOptions } from './src/lib/auth.js';
+import auth from '@mridang/astro-auth';
 
 export default defineConfig({
   integrations: [tailwind(), auth()],

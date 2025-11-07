@@ -17,11 +17,12 @@
     "@astrojs/tailwind": "^6.0.2",
     "@auth/core": "^0.40.0",
     "astro": "^5.14.8",
-    "auth-astro": "^4.2.0",
-    "openid-client": "^6.6.3"
+    "openid-client": "^6.6.3",
+    "@mridang/astro-auth": "^0.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@playwright/test": "^1.56.1",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
     "astro-eslint-parser": "^1.2.2",
