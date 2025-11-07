@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
-import { getSession } from 'auth-astro/server';
+import { getSession } from '@mridang/astro-auth/server';
+import authConfig from '../../../../auth.config.ts';
+import type { Session } from '@auth/core/types';
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -21,7 +23,7 @@ import { getSession } from 'auth-astro/server';
  * Extended user profile with ZITADEL-specific claims like roles and metadata.
  */
 export const GET: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+  const session: Session | null = await getSession(request, authConfig);
 
   if (!session?.accessToken) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
