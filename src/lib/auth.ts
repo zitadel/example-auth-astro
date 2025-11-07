@@ -1,9 +1,60 @@
 import Zitadel from '@auth/core/providers/zitadel';
 import { randomUUID } from 'crypto';
 import * as oidc from 'openid-client';
-import type { JWT } from '@auth/core/jwt';
 import { ZITADEL_SCOPES } from './scopes';
-import type { FullAuthConfig } from 'auth-astro/src/config.ts';
+import type { FullAuthConfig } from '@mridang/astro-auth';
+import type { JWT } from '@auth/core/jwt';
+import type { Session } from '@auth/core/types';
+import type { AdapterAccount, AdapterUser } from '@auth/core/adapters';
+
+// eslint-disable-next-line
+type GetEnvFunction = (key: string) => string | undefined;
+
+/**
+ * Constructs a secure logout URL for ZITADEL with CSRF protection.
+ *
+ * This function creates a proper logout URL that terminates the user's session
+ * both in your application and in ZITADEL. It includes security measures to
+ * prevent Cross-Site Request Forgery (CSRF) attacks during the logout process.
+ *
+ * ## Security Features
+ *
+ * - **State Parameter**: Random UUID for CSRF protection
+ * - **ID Token Hint**: Tells ZITADEL which session to terminate
+ * - **Post-Logout Redirect**: Where to send the user after logout
+ *
+ * ## Logout Flow
+ *
+ * 1. User clicks "logout" in your app
+ * 2. Your app calls this function to get the logout URL
+ * 3. User is redirected to ZITADEL's logout endpoint
+ * 4. ZITADEL terminates the session and redirects back to your app
+ * 5. Your app validates the state parameter for security
+ *
+ * @param idToken - The user's ID token from their current session (used to identify which session to terminate)
+ * @param getEnv - Function to retrieve environment variables
+ * @returns Promise containing the logout URL to redirect to and state value for validation
+ */
+export async function buildLogoutUrl(
+  idToken: string,
+  getEnv: GetEnvFunction,
+): Promise<{ url: string; state: string }> {
+  const config = await oidc.discovery(
+    new URL(getEnv('ZITADEL_DOMAIN')!),
+    getEnv('ZITADEL_CLIENT_ID')!,
+    getEnv('ZITADEL_CLIENT_SECRET'),
+  );
+
+  const state = randomUUID();
+
+  const urlObj = oidc.buildEndSessionUrl(config, {
+    id_token_hint: idToken,
+    post_logout_redirect_uri: getEnv('ZITADEL_POST_LOGOUT_URL')!,
+    state,
+  });
+
+  return { url: urlObj.toString(), state };
+}
 
 /**
  * Automatically refreshes an expired access token using the refresh token.
@@ -33,7 +84,7 @@ import type { FullAuthConfig } from 'auth-astro/src/config.ts';
  */
 async function refreshAccessToken(
   token: JWT,
-  getEnv: (key: string) => string | undefined,
+  getEnv: GetEnvFunction,
 ): Promise<JWT> {
   if (!token.refreshToken) {
     console.error('No refresh token available for refresh');
@@ -75,92 +126,6 @@ async function refreshAccessToken(
 }
 
 /**
- * Constructs a secure logout URL for ZITADEL with CSRF protection.
- *
- * This function creates a proper logout URL that terminates the user's session
- * both in your application and in ZITADEL. It includes security measures to
- * prevent Cross-Site Request Forgery (CSRF) attacks during the logout process.
- *
- * ## Security Features
- *
- * - **State Parameter**: Random UUID for CSRF protection
- * - **ID Token Hint**: Tells ZITADEL which session to terminate
- * - **Post-Logout Redirect**: Where to send the user after logout
- *
- * ## Logout Flow
- *
- * 1. User clicks "logout" in your app
- * 2. Your app calls this function to get the logout URL
- * 3. User is redirected to ZITADEL's logout endpoint
- * 4. ZITADEL terminates the session and redirects back to your app
- * 5. Your app validates the state parameter for security
- *
- * @param idToken - The user's ID token from their current session (used to identify which session to terminate)
- * @param getEnv - Function to retrieve environment variables
- * @returns Promise containing the logout URL to redirect to and state value for validation
- */
-export async function buildLogoutUrl(
-  idToken: string,
-  getEnv: (key: string) => string | undefined,
-): Promise<{ url: string; state: string }> {
-  const config = await oidc.discovery(
-    new URL(getEnv('ZITADEL_DOMAIN')!),
-    getEnv('ZITADEL_CLIENT_ID')!,
-    getEnv('ZITADEL_CLIENT_SECRET'),
-  );
-
-  const state = randomUUID();
-
-  const urlObj = oidc.buildEndSessionUrl(config, {
-    id_token_hint: idToken,
-    post_logout_redirect_uri: getEnv('ZITADEL_POST_LOGOUT_URL')!,
-    state,
-  });
-
-  return { url: urlObj.toString(), state };
-}
-
-/**
- * Extends NextAuth.js Session interface to include ZITADEL-specific tokens.
- *
- * This makes ZITADEL tokens available throughout your application via the
- * useSession() hook and getServerSession() function.
- */
-declare module '@auth/core/types' {
-  // noinspection JSUnusedGlobalSymbols
-  interface Session {
-    /** The OpenID Connect ID token from ZITADEL - used for logout and user identification */
-    idToken?: string;
-    /** The OAuth 2.0 access token - used for making authenticated API calls to ZITADEL */
-    accessToken?: string;
-    /** Error state indicating if token refresh failed - user needs to re-authenticate */
-    error?: string;
-  }
-}
-
-/**
- * Extends NextAuth.js JWT interface to store all necessary tokens and metadata.
- *
- * This internal interface stores tokens securely in the encrypted JWT that
- * NextAuth uses for session management.
- */
-declare module '@auth/core/jwt' {
-  // noinspection JSUnusedGlobalSymbols
-  interface JWT {
-    /** The OpenID Connect ID token from ZITADEL */
-    idToken?: string;
-    /** The OAuth 2.0 access token for making API calls */
-    accessToken?: string;
-    /** The OAuth 2.0 refresh token for getting new access tokens */
-    refreshToken?: string;
-    /** Unix timestamp (in milliseconds) when the access token expires */
-    expiresAt?: number;
-    /** Error flag set when token refresh fails */
-    error?: string;
-  }
-}
-
-/**
  * Complete NextAuth.js configuration for ZITADEL authentication with token refresh.
  *
  * This configuration implements the industry-standard OAuth 2.0 Authorization Code
@@ -195,10 +160,9 @@ declare module '@auth/core/jwt' {
  * - **jwt**: Manages token storage and refresh logic
  * - **session**: Shapes what data is available to your app
  */
-export function createAuthOptions(
-  getEnv: (key: string) => string | undefined,
-): FullAuthConfig {
+export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
   return {
+    trustHost: true,
     providers: [
       Zitadel({
         issuer: getEnv('ZITADEL_DOMAIN')!,
@@ -316,7 +280,7 @@ export function createAuthOptions(
        * @param baseUrl - Your application's base URL (e.g., https://yourdomain.com)
        * @returns The URL to redirect the user to after successful login
        */
-      async redirect({ baseUrl }) {
+      async redirect({ baseUrl }: { baseUrl: string }) {
         return `${baseUrl}/profile`;
       },
 
@@ -344,7 +308,15 @@ export function createAuthOptions(
        * @param user - User object (only present on initial login)
        * @returns Updated JWT token with fresh tokens or error state
        */
-      async jwt({ token, account, user }) {
+      async jwt({
+        token,
+        account,
+        user,
+      }: {
+        token: JWT;
+        account: AdapterAccount | null;
+        user: AdapterUser | null;
+      }): Promise<JWT> {
         if (account && user) {
           return {
             ...token,
@@ -388,7 +360,7 @@ export function createAuthOptions(
        * @param token - The JWT token containing all stored data
        * @returns The session object that your application will receive
        */
-      async session({ session, token }) {
+      async session({ session, token }: { session: Session; token: JWT }) {
         session.idToken = token.idToken;
         session.accessToken = token.accessToken;
         session.error = token.error;
