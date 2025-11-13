@@ -16,7 +16,7 @@
     "@astrojs/node": "^9.4.1",
     "@astrojs/tailwind": "^6.0.2",
     "@auth/core": "^0.40.0",
-    "astro": "^5.14.8",
+    "astro": "^5.15.6",
     "openid-client": "^6.6.3",
     "@mridang/astro-auth": "^0.0.2"
   },
