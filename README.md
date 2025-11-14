@@ -31,8 +31,8 @@ You'll need a ZITADEL account and application configured. Follow the [ZITADEL do
 
 > **Important:** Configure the following URLs in your ZITADEL application settings:
 >
-> - **Redirect URIs:** Add `http://localhost:4321/auth/callback` (for development)
-> - **Post Logout Redirect URIs:** Add `http://localhost:4321/api/auth/logout/callback` (for development)
+> - **Redirect URIs:** Add `http://localhost:3000/auth/callback` (for development)
+> - **Post Logout Redirect URIs:** Add `http://localhost:3000/api/auth/logout/callback` (for development)
 >
 > These URLs must exactly match what your Astro application uses. For production, add your production URLs.
 
@@ -42,8 +42,8 @@ To run the application, you first need to copy the `.env.example` file to a new 
 
 ```dotenv
 # Port number where your Astro server will listen for incoming HTTP requests.
-# Change this if port 4321 is already in use on your system.
-PORT=4321
+# Change this if port 3000 is already in use on your system.
+PORT=3000
 
 # Session timeout in seconds. Users will be automatically logged out after this
 # duration of inactivity. 3600 seconds = 1 hour.
@@ -74,16 +74,16 @@ ZITADEL_CLIENT_SECRET="your-randomly-generated-client-secret"
 
 # OAuth callback URL where ZITADEL redirects after user authentication. This
 # MUST exactly match a Redirect URI configured in your ZITADEL application.
-ZITADEL_CALLBACK_URL="http://localhost:4321/auth/callback"
+ZITADEL_CALLBACK_URL="http://localhost:3000/auth/callback"
 
 # URL where users are redirected after logout. This should match a Post Logout
 # Redirect URI configured in your ZITADEL application settings.
-ZITADEL_POST_LOGOUT_URL="http://localhost:4321/api/auth/logout/callback"
+ZITADEL_POST_LOGOUT_URL="http://localhost:3000/api/auth/logout/callback"
 
 # Auth.js base URL for your application. In development, this is typically
-# http://localhost:4321. In production, use your actual domain.
+# http://localhost:3000. In production, use your actual domain.
 AUTH_TRUST_HOST=true
-NEXTAUTH_URL="http://localhost:4321"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### Installation and Running
@@ -103,7 +103,7 @@ npm install
 npm run dev
 ```
 
-The application will now be running at `http://localhost:4321`.
+The application will now be running at `http://localhost:3000`.
 
 ## Key Features
 
