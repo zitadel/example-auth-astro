@@ -13,26 +13,26 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@astrojs/node": "^9.4.1",
+    "@astrojs/node": "^9.5.1",
     "@astrojs/tailwind": "^6.0.2",
-    "@auth/core": "^0.40.0",
-    "astro": "^5.15.6",
-    "openid-client": "^6.6.3",
-    "@mridang/astro-auth": "^0.0.2"
+    "@auth/core": "^0.41.1",
+    "astro": "^5.16.0",
+    "openid-client": "^6.8.1",
+    "@mridang/astro-auth": "^1.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
+    "@eslint/js": "^9.39.1",
     "@playwright/test": "^1.56.1",
-    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.39.1",
     "astro-eslint-parser": "^1.2.2",
-    "eslint": "^9.33.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-astro": "^1.3.1",
-    "globals": "^16.3.0",
+    "eslint-plugin-astro": "^1.5.0",
+    "globals": "^16.5.0",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "typescript": "^5.9.2"
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "typescript": "^5.9.3"
   }
 }
