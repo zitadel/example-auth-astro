@@ -2,7 +2,7 @@ import Zitadel from '@auth/core/providers/zitadel';
 import { randomUUID } from 'crypto';
 import * as oidc from 'openid-client';
 import { ZITADEL_SCOPES } from './scopes';
-import type { FullAuthConfig } from '@mridang/astro-auth';
+import type { FullAuthConfig } from '@zitadel/astro-auth';
 import type { JWT } from '@auth/core/jwt';
 import type { Session } from '@auth/core/types';
 import type { AdapterAccount, AdapterUser } from '@auth/core/adapters';

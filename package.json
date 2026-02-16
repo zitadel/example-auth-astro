@@ -2,6 +2,9 @@
   "name": "example-auth-astro2",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "start": "astro dev",
     "dev": "astro dev",
@@ -17,7 +20,7 @@
     "@astrojs/node": "^9.4.1",
     "@astrojs/tailwind": "^6.0.2",
     "@auth/core": "^0.40.0",
-    "@mridang/astro-auth": "^0.0.2",
+    "@zitadel/astro-auth": "^1.2.0",
     "astro": "^5.16.11",
     "openid-client": "^6.6.3"
   },

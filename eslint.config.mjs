@@ -9,6 +9,9 @@ import astroParser from 'astro-eslint-parser';
 // noinspection JSUnresolvedReference
 export default [
   {
+    ignores: ['.astro/**', 'node_modules/**', 'dist/**'],
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     plugins: {
       '@typescript-eslint': tsPlugin,

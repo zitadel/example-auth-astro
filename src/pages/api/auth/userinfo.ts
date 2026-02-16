@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getSession } from '@mridang/astro-auth/server';
+import { getSession } from '@zitadel/astro-auth/server';
 import authConfig from '../../../../auth.config.ts';
 import type { Session } from '@auth/core/types';
 
