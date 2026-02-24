@@ -17,7 +17,7 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@astrojs/node": "^9.4.1",
+    "@astrojs/node": "^9.5.4",
     "@astrojs/tailwind": "^6.0.2",
     "@auth/core": "^0.40.0",
     "@zitadel/astro-auth": "^1.2.0",
