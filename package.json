@@ -11,7 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint . --fix",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "prepack": "tsc --noEmit",
     "test": "playwright test"
