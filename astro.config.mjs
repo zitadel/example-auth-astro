@@ -1,10 +1,10 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
 import auth from '@zitadel/astro-auth';
 
 export default defineConfig({
-  integrations: [tailwind(), auth()],
+  integrations: [auth()],
   output: 'server',
   adapter: node({
     mode: 'standalone',
@@ -13,6 +13,7 @@ export default defineConfig({
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
   },
   vite: {
+    plugins: [tailwindcss()],
     server: {
       headers: {
         'X-Frame-Options': 'DENY',
