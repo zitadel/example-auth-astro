@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { parse } from 'cookie';
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -9,24 +10,17 @@ import type { APIRoute } from 'astro';
  * If validation is successful, it clears the user's session cookies and
  * redirects to a success page. Otherwise, it redirects to an error page.
  *
- * @param request - The incoming Astro request object, which contains the
- * headers and cookies for validation.
- * @param url - The URL object containing search parameters, including the `state` from the IdP.
- * @returns A Response object that either redirects the user to a success
+ * @param cookies - The Astro cookies API used to delete the session cookies.
+ * @param request - The incoming Astro request object, used to read the
+ * incoming `Cookie` header.
+ * @param url - The URL object containing search parameters, including the
+ * `state` from the IdP.
+ * @returns A redirect response that either redirects the user to a success
  * or error page. Upon success, it includes headers to delete session cookies.
  */
-export const GET: APIRoute = async ({ request, url }) => {
+export const GET: APIRoute = async ({ cookies, request, url }) => {
   const state = url.searchParams.get('state');
-  const cookieHeader = request.headers.get('cookie');
-
-  let logoutStateCookie: string | undefined;
-  if (cookieHeader) {
-    const cookies = cookieHeader
-      .split(';')
-      .map((cookie) => cookie.trim().split('='));
-    const logoutStateEntry = cookies.find(([name]) => name === 'logout_state');
-    logoutStateCookie = logoutStateEntry ? logoutStateEntry[1] : undefined;
-  }
+  const logoutStateCookie = cookies.get('logout_state')?.value;
 
   if (state && logoutStateCookie && state === logoutStateCookie) {
     const successUrl = new URL('/logout/success', request.url);
@@ -34,10 +28,16 @@ export const GET: APIRoute = async ({ request, url }) => {
       status: 302,
       headers: {
         Location: successUrl.toString(),
+        'Clear-Site-Data': '"cookies"',
       },
     });
-
-    response.headers.set('Clear-Site-Data', '"cookies"');
+    const cookieHeader = request.headers.get('cookie') ?? '';
+    for (const name of Object.keys(parse(cookieHeader))) {
+      if (name.includes('authjs.')) {
+        cookies.delete(name, { path: '/' });
+      }
+    }
+    cookies.delete('logout_state', { path: '/api/auth/logout/callback' });
     return response;
   } else {
     const errorUrl = new URL('/logout/error', request.url);
