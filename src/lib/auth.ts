@@ -281,7 +281,10 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * @returns The URL to redirect the user to after successful login
        */
       async redirect({ baseUrl }: { baseUrl: string }) {
-        return `${baseUrl}/profile`;
+        const postLoginUrl = getEnv('ZITADEL_POST_LOGIN_URL') || '/profile';
+        return postLoginUrl.startsWith('http')
+          ? postLoginUrl
+          : `${baseUrl}${postLoginUrl}`;
       },
 
       /**
