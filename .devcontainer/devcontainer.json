@@ -1,5 +1,5 @@
 {
-  "name": "ZITADEL Example Astro Auth",
+  "name": "Zitadel Example Astro Auth",
   "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
   "forwardPorts": [3000],
   "portsAttributes": {
