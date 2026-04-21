@@ -296,8 +296,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * 3. **Automatic Refresh**: Calls refresh function when token expires
        *
        * ## When This Runs
-       * - Every time getServerSession() is called
-       * - Every time useSession() updates
+       * - Every time getSession() is called
        * - Before each authenticated API request
        *
        * ## Token Storage Strategy
@@ -344,7 +343,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * Shapes the session object that your application receives.
        *
        * This callback transforms the internal JWT token into the session object
-       * that your application code can access via useSession() or getServerSession().
+       * that your application code can access via getSession().
        *
        *
        * ## Security Note
