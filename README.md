@@ -87,7 +87,6 @@ ZITADEL_POST_LOGIN_URL="/profile"
 # Auth.js base URL for your application. In development, this is typically
 # http://localhost:3000. In production, use your actual domain.
 AUTH_TRUST_HOST=true
-NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### Installation and Running
