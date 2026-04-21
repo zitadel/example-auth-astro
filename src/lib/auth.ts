@@ -68,7 +68,7 @@ export async function buildLogoutUrl(
  *
  * ## How Token Refresh Works
  *
- * 1. **Token Expiry Detection**: NextAuth automatically checks if the access token has expired
+ * 1. **Token Expiry Detection**: Auth.js automatically checks if the access token has expired
  * 2. **Refresh Request**: Uses the refresh token to request new tokens from ZITADEL
  * 3. **Token Update**: Updates the JWT with the new access token and expiry time
  * 4. **Seamless Experience**: User continues without interruption
@@ -126,7 +126,7 @@ async function refreshAccessToken(
 }
 
 /**
- * Complete NextAuth.js configuration for ZITADEL authentication with token refresh.
+ * Complete Auth.js configuration for ZITADEL authentication with token refresh.
  *
  * This configuration implements the industry-standard OAuth 2.0 Authorization Code
  * Flow with PKCE (Proof Key for Code Exchange) for maximum security. It includes
@@ -155,7 +155,7 @@ async function refreshAccessToken(
  *
  * ## Callback Functions Explained
  *
- * NextAuth uses callback functions to customize the authentication flow:
+ * Auth.js uses callback functions to customize the authentication flow:
  * - **redirect**: Controls where users go after login/logout
  * - **jwt**: Manages token storage and refresh logic
  * - **session**: Shapes what data is available to your app
@@ -186,15 +186,15 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
     secret: getEnv('SESSION_SECRET')!,
 
     /**
-     * Custom page configurations for NextAuth.js
+     * Custom page configurations for Auth.js
      *
-     * NextAuth.js provides several built-in pages for authentication flows, but
+     * Auth.js provides several built-in pages for authentication flows, but
      * you can customize them to match your application's design and branding.
      * This configuration overrides the default pages with custom implementations.
      *
      * ## Built-in Pages Available
      *
-     * NextAuth.js includes default pages for common authentication scenarios:
+     * Auth.js includes default pages for common authentication scenarios:
      * - Sign-in page: Shows available providers and handles authentication
      * - Sign-out page: Confirmation page for signing out
      * - Error page: Displays authentication errors with user-friendly messages
@@ -216,7 +216,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
      *
      * ### Error Page (`/auth/error`)
      * - **Purpose**: Displays authentication errors with user-friendly messages
-     * - **Features**: Handles all NextAuth error types (Configuration, AccessDenied, etc.)
+     * - **Features**: Handles all Auth.js error types (Configuration, AccessDenied, etc.)
      * - **Design**: Consistent error page styling with recovery options
      * - **Preview**: Visit `/auth/error?error=Configuration` or `/auth/error?error=AccessDenied`
      *
@@ -239,7 +239,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
      *
      * ## Fallback to Built-in Pages
      *
-     * If you want to use NextAuth's default pages instead of the custom ones,
+     * If you want to use Auth.js's default pages instead of the custom ones,
      * simply comment out or remove the `pages` configuration:
      *
      * ```typescript
@@ -249,12 +249,12 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
      * // },
      * ```
      *
-     * NextAuth will automatically use its built-in pages, which are functional
+     * Auth.js will automatically use its built-in pages, which are functional
      * but have basic styling and may not match your application's design.
      *
      * ## Available Page Options
      *
-     * You can customize any of these NextAuth pages:
+     * You can customize any of these Auth.js pages:
      * - `signIn`: Custom sign-in page (default: `/api/auth/login`)
      * - `signOut`: Custom sign-out confirmation page
      * - `error`: Custom error page (default: `/api/auth/error`)
@@ -274,7 +274,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * Controls where users are redirected after successful authentication.
        *
        * This callback runs after a user successfully signs in and determines
-       * their destination. By default, NextAuth would redirect to the page they
+       * their destination. By default, Auth.js would redirect to the page they
        * came from, but this override ensures all users go to the profile page.
        *
        * @param baseUrl - Your application's base URL (e.g., https://yourdomain.com)
@@ -359,7 +359,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * - **accessToken**: For API calls (if needed on the client-side)
        * - **error**: To handle token refresh failures
        *
-       * @param session - The base session object from NextAuth
+       * @param session - The base session object from Auth.js
        * @param token - The JWT token containing all stored data
        * @returns The session object that your application will receive
        */
