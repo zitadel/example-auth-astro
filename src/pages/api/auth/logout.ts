@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
       },
     });
 
-    // Set cookie manually to match Next.js cookies.set behavior
+    // Set the logout state cookie for CSRF validation in the callback
     response.headers.set(
       'Set-Cookie',
       `logout_state=${state}; HttpOnly; Secure=${process.env.NODE_ENV === 'production'}; SameSite=Lax; Path=/api/auth/logout/callback`,
