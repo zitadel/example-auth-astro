@@ -7,14 +7,16 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "start": "astro dev",
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint .",
+    "build": "astro build",
+    "dev": "astro dev",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepack": "tsc --noEmit",
+    "preview": "astro preview",
+    "start": "astro dev",
     "test": "playwright test"
   },
   "dependencies": {
