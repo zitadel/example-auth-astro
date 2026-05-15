@@ -95,9 +95,9 @@ Follow these steps to get the application running:
 
 ```bash
 # 1. Clone the repository
-git clone git@github.com:zitadel/example-auth-astro.git
+git clone git@github.com:zitadel/example-astro-auth.git
 
-cd example-auth-astro
+cd example-astro-auth
 
 # 2. Install the project dependencies
 npm install
