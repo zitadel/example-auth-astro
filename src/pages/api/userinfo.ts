@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getSession } from '@zitadel/astro-auth/server';
-import authConfig from '../../../../auth.config.ts';
+import authConfig from '../../../auth.config.ts';
 import type { Session } from '@auth/core/types';
 
 // noinspection JSUnusedGlobalSymbols
