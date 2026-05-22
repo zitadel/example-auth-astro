@@ -3,10 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getMessage } from '../../lib/message';
 
 const error = Astro.url.searchParams.get('error');
-const callbackUrl = Astro.url.searchParams.get('callbackUrl');
-
-// We need to get providers and CSRF token, but in Astro we'll handle this differently
-// For now, we'll use the zitadel provider directly since that's what the original does
+const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/';
 ---
 
 <Layout title="Sign in">
@@ -52,11 +49,7 @@ const callbackUrl = Astro.url.searchParams.get('callbackUrl');
       <div class="mt-10">
         <form action="/api/auth/signin/zitadel" method="POST" class="space-y-4">
           <input type="hidden" name="csrfToken" value="" />
-          <input
-            type="hidden"
-            name="callbackUrl"
-            value={callbackUrl ?? undefined}
-          />
+          <input type="hidden" name="callbackUrl" value={callbackUrl} />
           <button
             type="submit"
             class="flex w-full items-center justify-center gap-3 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700"
@@ -96,3 +89,23 @@ const callbackUrl = Astro.url.searchParams.get('callbackUrl');
     </div>
   </main>
 </Layout>
+
+<script>
+  // Populate the csrfToken hidden input client-side. Auth.js issues a
+  // double-submit cookie token via GET /api/auth/csrf and validates it
+  // on the POST to /api/auth/signin/{provider}; without this, the
+  // submit fails with MissingCSRF.
+  (async () => {
+    try {
+      const res = await fetch('/api/auth/csrf');
+      const data = (await res.json()) as { csrfToken?: string };
+      const input = document.querySelector(
+        'input[name="csrfToken"]',
+      ) as HTMLInputElement | null;
+      if (input) input.value = data?.csrfToken ?? '';
+    } catch {
+      // CSRF fetch failed; the form will fail to submit. Auth.js will
+      // surface a MissingCSRF error which lands on the error page.
+    }
+  })();
+</script>
