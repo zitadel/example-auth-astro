@@ -2,15 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getSession } from '@zitadel/astro-auth/server';
+import { getSession, signInUrl } from '@zitadel/astro-auth/server';
 import authConfig from '../../auth.config';
 
 const session = await getSession(Astro.request, authConfig);
 
 if (!session) {
-  return Astro.redirect(
-    '/api/auth/signin/zitadel?callbackUrl=' + encodeURIComponent('/profile'),
-  );
+  return Astro.redirect(signInUrl({ redirectTo: '/profile' }));
 }
 ---
 
