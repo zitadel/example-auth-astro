@@ -17,7 +17,7 @@ import authConfig from '../../../../auth.config.ts';
  * response if no valid session exists. The response includes a secure state cookie
  * that will be validated in the logout callback.
  */
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   const session = await getSession(request, authConfig);
 
   if (!session?.idToken) {
@@ -36,19 +36,24 @@ export const POST: APIRoute = async ({ request }) => {
       (key: string) => import.meta.env[key],
     );
 
-    const response = new Response(null, {
+    // Set the logout state cookie for CSRF validation in the callback.
+    // Using Astro's cookies.set() helper (rather than a manual Set-Cookie
+    // header) so the Secure flag is emitted correctly per RFC 6265 §5.2.5
+    // — Secure is a flag, not a key=value pair. Manually concatenating
+    // `Secure=true/false` causes browsers to treat the cookie as Secure
+    // regardless of value and drop it in dev (HTTP).
+    cookies.set('logout_state', state, {
+      httpOnly: true,
+      secure: import.meta.env.PROD,
+      sameSite: 'lax',
+      path: '/api/auth/logout/callback',
+    });
+
+    return new Response(null, {
       status: 302,
       headers: {
         Location: url,
       },
     });
-
-    // Set the logout state cookie for CSRF validation in the callback
-    response.headers.set(
-      'Set-Cookie',
-      `logout_state=${state}; HttpOnly; Secure=${process.env.NODE_ENV === 'production'}; SameSite=Lax; Path=/api/auth/logout/callback`,
-    );
-
-    return response;
   }
 };
