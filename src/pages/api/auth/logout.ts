@@ -31,10 +31,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       },
     );
   } else {
-    const { url, state } = await buildLogoutUrl(
-      session.idToken,
-      (key: string) => import.meta.env[key],
-    );
+    const { url, state } = await buildLogoutUrl(session.idToken);
 
     // Set the logout state cookie for CSRF validation in the callback.
     // Using Astro's cookies.set() helper (rather than a manual Set-Cookie

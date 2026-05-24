@@ -7,9 +7,6 @@ import type { JWT } from '@auth/core/jwt';
 import type { Session } from '@auth/core/types';
 import type { AdapterAccount, AdapterUser } from '@auth/core/adapters';
 
-// eslint-disable-next-line
-type GetEnvFunction = (key: string) => string | undefined;
-
 /**
  * Constructs a secure logout URL for ZITADEL with CSRF protection.
  *
@@ -32,24 +29,22 @@ type GetEnvFunction = (key: string) => string | undefined;
  * 5. Your app validates the state parameter for security
  *
  * @param idToken - The user's ID token from their current session (used to identify which session to terminate)
- * @param getEnv - Function to retrieve environment variables
  * @returns Promise containing the logout URL to redirect to and state value for validation
  */
 export async function buildLogoutUrl(
   idToken: string,
-  getEnv: GetEnvFunction,
 ): Promise<{ url: string; state: string }> {
   const config = await oidc.discovery(
-    new URL(getEnv('ZITADEL_DOMAIN')!),
-    getEnv('ZITADEL_CLIENT_ID')!,
-    getEnv('ZITADEL_CLIENT_SECRET'),
+    new URL(import.meta.env.ZITADEL_DOMAIN!),
+    import.meta.env.ZITADEL_CLIENT_ID!,
+    import.meta.env.ZITADEL_CLIENT_SECRET,
   );
 
   const state = randomUUID();
 
   const urlObj = oidc.buildEndSessionUrl(config, {
     id_token_hint: idToken,
-    post_logout_redirect_uri: getEnv('ZITADEL_POST_LOGOUT_URL')!,
+    post_logout_redirect_uri: import.meta.env.ZITADEL_POST_LOGOUT_URL!,
     state,
   });
 
@@ -79,13 +74,9 @@ export async function buildLogoutUrl(
  * the function sets an error flag that forces the user to sign in again.
  *
  * @param token - The current JWT containing the refresh token and other session data
- * @param getEnv - Function to retrieve environment variables
  * @returns Promise resolving to updated JWT with new tokens or error state
  */
-async function refreshAccessToken(
-  token: JWT,
-  getEnv: GetEnvFunction,
-): Promise<JWT> {
+async function refreshAccessToken(token: JWT): Promise<JWT> {
   if (!token.refreshToken) {
     console.error('No refresh token available for refresh');
     return {
@@ -96,9 +87,9 @@ async function refreshAccessToken(
 
   try {
     const config = await oidc.discovery(
-      new URL(getEnv('ZITADEL_DOMAIN')!),
-      getEnv('ZITADEL_CLIENT_ID')!,
-      getEnv('ZITADEL_CLIENT_SECRET'),
+      new URL(import.meta.env.ZITADEL_DOMAIN!),
+      import.meta.env.ZITADEL_CLIENT_ID!,
+      import.meta.env.ZITADEL_CLIENT_SECRET,
     );
 
     const tokenEndpointResponse = await oidc.refreshTokenGrant(
@@ -160,14 +151,14 @@ async function refreshAccessToken(
  * - **jwt**: Manages token storage and refresh logic
  * - **session**: Shapes what data is available to your app
  */
-export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
+export function createAuthOptions(): FullAuthConfig {
   return {
     trustHost: true,
     providers: [
       Zitadel({
-        issuer: getEnv('ZITADEL_DOMAIN')!,
-        clientId: getEnv('ZITADEL_CLIENT_ID')!,
-        clientSecret: getEnv('ZITADEL_CLIENT_SECRET')!,
+        issuer: import.meta.env.ZITADEL_DOMAIN!,
+        clientId: import.meta.env.ZITADEL_CLIENT_ID!,
+        clientSecret: import.meta.env.ZITADEL_CLIENT_SECRET!,
         authorization: {
           params: {
             scope: ZITADEL_SCOPES,
@@ -180,10 +171,10 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
     prefix: '/api/auth',
     session: {
       strategy: 'jwt',
-      maxAge: Number(getEnv('SESSION_DURATION')) || 3600,
+      maxAge: Number(import.meta.env.SESSION_DURATION) || 3600,
     },
 
-    secret: getEnv('SESSION_SECRET')!,
+    secret: import.meta.env.SESSION_SECRET!,
 
     /**
      * Custom page configurations for Auth.js
@@ -281,7 +272,8 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
        * @returns The URL to redirect the user to after successful login
        */
       async redirect({ baseUrl }: { baseUrl: string }) {
-        const postLoginUrl = getEnv('ZITADEL_POST_LOGIN_URL') || '/profile';
+        const postLoginUrl =
+          import.meta.env.ZITADEL_POST_LOGIN_URL || '/profile';
         return postLoginUrl.startsWith('http')
           ? postLoginUrl
           : `${baseUrl}${postLoginUrl}`;
@@ -336,7 +328,7 @@ export function createAuthOptions(getEnv: GetEnvFunction): FullAuthConfig {
           return token;
         }
 
-        return refreshAccessToken(token, getEnv);
+        return refreshAccessToken(token);
       },
 
       /**
