@@ -1,6 +1,6 @@
 module.exports = {
   ignore: ['commitlint.config.js'],
-  ignoreDependencies: ['@commitlint/config-conventional'],
+  ignoreDependencies: ['@commitlint/config-conventional', '@zitadel/astro-auth'],
   entry: [
     'src/pages/**/*',
     'src/components/**/*',
