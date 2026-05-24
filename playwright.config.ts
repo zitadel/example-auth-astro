@@ -11,6 +11,7 @@ const testEnv = {
   ZITADEL_CALLBACK_URL: 'http://localhost:3000/api/auth/callback/zitadel',
   ZITADEL_POST_LOGOUT_URL: 'http://localhost:3000/api/auth/logout/callback',
   ZITADEL_POST_LOGIN_URL: '/profile',
+  AUTH_URL: 'http://localhost:3000',
 };
 
 // noinspection JSUnusedGlobalSymbols
