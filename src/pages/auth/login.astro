@@ -2,8 +2,48 @@
 import Layout from '../../layouts/Layout.astro';
 import { getMessage } from '../../lib/message';
 
+interface AuthProvider {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string;
+  readonly signinUrl: string;
+  readonly callbackUrl: string;
+}
+
 const error = Astro.url.searchParams.get('error');
 const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/';
+
+// Fetch providers + CSRF token server-side so the form renders with
+// real values (rather than blanks populated client-side). Matches
+// the dynamic-provider pattern used by next/sveltekit/solidstart/nuxt.
+const origin = Astro.url.origin;
+let provider: AuthProvider | undefined;
+let csrfToken = '';
+try {
+  const [providersRes, csrfRes] = await Promise.all([
+    fetch(`${origin}/api/auth/providers`, {
+      headers: { cookie: Astro.request.headers.get('cookie') ?? '' },
+    }),
+    fetch(`${origin}/api/auth/csrf`, {
+      headers: { cookie: Astro.request.headers.get('cookie') ?? '' },
+    }),
+  ]);
+  const providers = (await providersRes.json()) as Record<
+    string,
+    AuthProvider | undefined
+  >;
+  provider = providers?.zitadel;
+  const csrfData = (await csrfRes.json()) as { csrfToken?: string };
+  csrfToken = csrfData?.csrfToken ?? '';
+  // Forward any CSRF cookie set by /api/auth/csrf so the POST below
+  // matches the double-submit token.
+  for (const setCookie of csrfRes.headers.getSetCookie?.() ?? []) {
+    Astro.response.headers.append('set-cookie', setCookie);
+  }
+} catch {
+  // Provider/CSRF fetch failed; the form below won't render and the
+  // user will be redirected to the error page via the catch-all.
+}
 ---
 
 <Layout title="Sign in">
@@ -46,25 +86,30 @@ const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/';
         }
       </p>
 
-      <div class="mt-10">
-        <form action="/api/auth/signin/zitadel" method="POST" class="space-y-4">
-          <input type="hidden" name="csrfToken" value="" />
-          <input type="hidden" name="callbackUrl" value={callbackUrl} />
-          <button
-            type="submit"
-            class="flex w-full items-center justify-center gap-3 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700"
-          >
-            <!--suppress HtmlDeprecatedAttribute -->
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                fill-rule="evenodd"
-                d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"
-                clip-rule="evenodd"></path>
-            </svg>
-            Sign in with Zitadel
-          </button>
-        </form>
-      </div>
+      {
+        provider && (
+          <div class="mt-10">
+            <form action={provider.signinUrl} method="POST" class="space-y-4">
+              <input type="hidden" name="csrfToken" value={csrfToken} />
+              <input type="hidden" name="callbackUrl" value={callbackUrl} />
+              <button
+                type="submit"
+                class="flex w-full items-center justify-center gap-3 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition duration-200 hover:bg-blue-700"
+              >
+                {/* <!--suppress HtmlDeprecatedAttribute --> */}
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Sign in with {provider.name}
+              </button>
+            </form>
+          </div>
+        )
+      }
       <div class="mt-8">
         <a
           href="/"
@@ -89,23 +134,3 @@ const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/';
     </div>
   </main>
 </Layout>
-
-<script>
-  // Populate the csrfToken hidden input client-side. Auth.js issues a
-  // double-submit cookie token via GET /api/auth/csrf and validates it
-  // on the POST to /api/auth/signin/{provider}; without this, the
-  // submit fails with MissingCSRF.
-  (async () => {
-    try {
-      const res = await fetch('/api/auth/csrf');
-      const data = (await res.json()) as { csrfToken?: string };
-      const input = document.querySelector(
-        'input[name="csrfToken"]',
-      ) as HTMLInputElement | null;
-      if (input) input.value = data?.csrfToken ?? '';
-    } catch {
-      // CSRF fetch failed; the form will fail to submit. Auth.js will
-      // surface a MissingCSRF error which lands on the error page.
-    }
-  })();
-</script>

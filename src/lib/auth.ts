@@ -153,7 +153,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
  */
 export function createAuthOptions(): FullAuthConfig {
   return {
-    trustHost: true,
     providers: [
       Zitadel({
         issuer: import.meta.env.ZITADEL_DOMAIN!,
@@ -167,8 +166,6 @@ export function createAuthOptions(): FullAuthConfig {
       }),
     ],
 
-    basePath: '/api/auth',
-    prefix: '/api/auth',
     session: {
       strategy: 'jwt',
       maxAge: Number(import.meta.env.SESSION_DURATION) || 3600,
