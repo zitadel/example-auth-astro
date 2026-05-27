@@ -7,7 +7,6 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "astro": "astro",
     "build": "astro build",
     "dev": "astro dev",
     "format": "prettier --write .",
