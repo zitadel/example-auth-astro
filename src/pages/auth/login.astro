@@ -11,7 +11,7 @@ interface AuthProvider {
 }
 
 const error = Astro.url.searchParams.get('error');
-const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/';
+const callbackUrl = Astro.url.searchParams.get('callbackUrl') ?? '/profile';
 
 // Fetch providers + CSRF token server-side so the form renders with
 // real values (rather than blanks populated client-side). Matches
