@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "depcheck": "npx knip",
-    "prepack": "tsc --noEmit",
+    "prepack": "astro sync && tsc --noEmit",
     "preview": "astro preview",
     "start": "astro dev",
     "test": "playwright test"
