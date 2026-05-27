@@ -1,9 +1,8 @@
 import js from '@eslint/js';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tseslint from 'typescript-eslint';
 import eslintPluginAstro from 'eslint-plugin-astro';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
 import astroParser from 'astro-eslint-parser';
 
 // noinspection JSUnresolvedReference
@@ -14,10 +13,10 @@ export default [
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
-      '@typescript-eslint': tsPlugin,
+      '@typescript-eslint': tseslint.plugin,
     },
     languageOptions: {
-      parser: tsParser,
+      parser: tseslint.parser,
       parserOptions: {
         project: 'tsconfig.json',
       },
@@ -39,7 +38,7 @@ export default [
     languageOptions: {
       parser: astroParser,
       parserOptions: {
-        parser: tsParser,
+        parser: tseslint.parser,
         ecmaVersion: 2020,
         sourceType: 'module',
       },
