@@ -36,7 +36,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   try {
     const response = await fetch(
-      `${process.env.ZITADEL_DOMAIN}/oidc/v1/userinfo`,
+      `${import.meta.env.ZITADEL_DOMAIN}/oidc/v1/userinfo`,
       {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,
