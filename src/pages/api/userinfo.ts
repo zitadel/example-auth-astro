@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getSession } from '@zitadel/astro-auth/server';
-import authConfig from '../../../../auth.config.ts';
+import authConfig from '../../../auth.config.ts';
 import type { Session } from '@auth/core/types';
 
 // noinspection JSUnusedGlobalSymbols
@@ -36,7 +36,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   try {
     const response = await fetch(
-      `${process.env.ZITADEL_DOMAIN}/oidc/v1/userinfo`,
+      `${import.meta.env.ZITADEL_DOMAIN}/oidc/v1/userinfo`,
       {
         headers: {
           Authorization: `Bearer ${session.accessToken}`,

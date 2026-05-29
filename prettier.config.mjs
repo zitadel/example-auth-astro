@@ -7,7 +7,7 @@ export default {
   tabWidth: 2,
   useTabs: false,
   plugins: ['prettier-plugin-astro', 'prettier-plugin-tailwindcss'],
-  tailwindConfig: './tailwind.config.mjs',
+  tailwindStylesheet: './src/styles/global.css',
   overrides: [
     {
       files: '*.astro',
