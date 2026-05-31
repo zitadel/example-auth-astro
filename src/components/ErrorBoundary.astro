@@ -32,11 +32,13 @@
  * ```
  */
 
+// The `Props` interface declares an optional `showDetails` prop callers can
+// pass, but Astro doesn't have runtime component-level error catching, so
+// the value isn't read inside this wrapper. The prop is forward-compatible:
+// it'll be consumed once Astro adds a hook for it.
 interface Props {
   showDetails?: boolean;
 }
-
-const { showDetails: _showDetails = false } = Astro.props;
 ---
 
 <slot />
