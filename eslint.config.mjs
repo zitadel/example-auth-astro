@@ -1,55 +1,39 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintPluginAstro from 'eslint-plugin-astro';
+import ts from 'typescript-eslint';
+import astroPlugin from 'eslint-plugin-astro';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
-import astroParser from 'astro-eslint-parser';
 
-// noinspection JSUnresolvedReference
-export default [
+export default ts.config(
   {
-    ignores: ['.astro/**', 'node_modules/**', 'dist/**'],
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '.astro/**',
+    ],
   },
+  js.configs.recommended,
+  ...ts.configs.recommended,
   {
     files: ['**/*.{ts,tsx}'],
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
-    },
     languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        project: 'tsconfig.json',
-      },
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
-    },
-    rules: {
-      ...js.configs.recommended.rules,
-      ...prettier.rules,
+      parser: ts.parser,
+      parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+      globals: { ...globals.browser, ...globals.node, ...globals.es2021 },
     },
   },
   {
-    files: ['**/*.astro'],
-    plugins: {
-      'eslint-plugin-astro': eslintPluginAstro,
-    },
+    files: ['**/*.{js,mjs}'],
     languageOptions: {
-      parser: astroParser,
-      parserOptions: {
-        parser: tseslint.parser,
-        ecmaVersion: 2020,
-        sourceType: 'module',
-      },
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-      },
-    },
-    rules: {
-      ...eslintPluginAstro.configs.recommended.rules,
-      ...prettier.rules,
+      globals: { ...globals.node, ...globals.es2021 },
     },
   },
-];
+  {
+    files: ['**/*.{test,spec}.{ts,tsx,js,mjs}', 'test/**/*.{ts,tsx,js,mjs}'],
+    languageOptions: { globals: { ...globals.jest, ...globals.node } },
+  },
+  ...astroPlugin.configs['flat/recommended'],
+  prettier,
+);
