@@ -23,7 +23,7 @@
     "@astrojs/node": "^10.0.5",
     "@auth/core": "^0.40.0",
     "@zitadel/astro-auth": "^1.5.2",
-    "astro": "^6.1.8",
+    "astro": "^6.4.8",
     "cookie": "^1.1.1",
     "openid-client": "^6.6.3"
   },
