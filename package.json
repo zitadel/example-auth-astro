@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^10.0.5",
-    "@auth/core": "^0.40.0",
+    "@auth/core": "^0.41.3",
     "@zitadel/astro-auth": "^1.5.2",
     "astro": "^6.4.8",
     "cookie": "^1.1.1",
